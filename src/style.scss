@@ -1,0 +1,70 @@
+$primary-color: #4527a0;
+$secondary-color: #fb8c00;
+
+.ask {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .top {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        textarea {
+            border: none;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            font-size: 22px;
+            &:focus {
+                box-shadow: 0 8px 16px 0 rgba(69, 69, 160, 0.8);
+                outline: none;
+            }
+        }
+
+        button {
+            margin-top: 50px;
+            padding: 10px 20px;
+            border: 1px solid $primary-color;
+            background-color: white;
+            color: $primary-color;
+            font-weight: bold;
+            text-transform: uppercase;
+
+
+        }
+    }
+}
+
+.ans-wrap {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    margin-top: 40px;
+
+    .ans {
+        display: flex;
+        justify-content: space-between;
+        font-size: 22px;
+        overflow: auto;
+
+        // box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        .left {
+            width: 600px;
+            height: 200px;
+            padding: 10px;
+            box-sizing: border-box;
+            border-left: 5px solid $primary-color;
+        }
+
+        .right {
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            width: 600px;
+            height: 200px;
+            margin-left: 50px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+    }
+}
