@@ -33,64 +33,39 @@ import MYDATA from './data/_useState';//MYDATA is an object of useState's lesson
 const App = () => {
 
   // -----------------input-----------------------
-  const [blank, setBlank] = useState({
+  const [action, setAction] = useState({
     count: 0,
     key: Object.keys(MYDATA)[0],
     inputValue: "",
-    ARRAY_LENGTH: Object.keys(MYDATA).length, // lay tong chieu dai array
-    total_item: 0
+    ARRAY_LENGTH: Object.keys(MYDATA).length, 
+   
 
   })
-
-  const ref = useRef(null); //set focus input
+  const ref = useRef(null);
   const updateCount = () => {
-    setBlank((previouState) => {
-      return { ...previouState, count: blank.count + 1 }
-    })
-  }
-  const updateKey = () => {
-    setBlank((previouState) => {
-      return { ...previouState, key: Object.keys(MYDATA)[blank.count] }
-    })
-  }
-  const updateInputValue = () => {
-    setBlank((previouState) => {
-      return { ...previouState, inputValue: "" }
+    setAction((previouState) => {
+      return { ...previouState, count: action.count + 1 }
     })
   }
   const updateInputValueOnchange = (value) => {
-    setBlank((previouState) => {
+    setAction((previouState) => {
       return { ...previouState, inputValue: value }
-    })
-  }
-  const updateTotalItem = () => {
-    setBlank((previouState) => {
-      return { ...previouState, total_item: blank.total_item + 1 }
     })
   }
   // ------------------end input------------------
   // ------------------handel---------------------
-  const setAnswer = () => {
-    MYDATA[blank.key].result = blank.inputValue; // res is a props in MYDATA Object
-    
-    MYDATA[blank.key]["count"] = blank.count;
-    updateCount();
-    //updateKey();
-    //blank.key = Object.keys(MYDATA)[blank.count];
-    updateInputValue();
-    updateTotalItem();
-
-  }
-  useEffect(() => setBlank({
-    ...blank,
-    key:Object.keys(MYDATA)[blank.count]
-  }),[blank.count])
-  console.log("===============================");
-  console.log("blank.count : " + blank.count);
-  console.log("blank.key : " + Object.keys(MYDATA)[blank.count]);
-  console.log("blank.total_item : " + blank.total_item);
-  console.log(MYDATA);
-  console.log("===============================");
+  useEffect(() => {
+    MYDATA[action.key]["count"] = action.count+1;
+  },[])
+  useEffect(() => {
+    setAction({
+      ...action,
+      key: Object.keys(MYDATA)[action.count],
+      inputValue:""
+    })
+    MYDATA[action.key]["count"] = action.count;
+    MYDATA[action.key].result = action.inputValue; // res is a props in MYDATA Object
+  }, [action.count])
   // ------------------end handel----------------
   // ------------------output--------------------
   return (
@@ -98,12 +73,12 @@ const App = () => {
     <div className='ask'>
       <div
         className='top'
-        style={blank.count === blank.ARRAY_LENGTH ? { "display": "none" } : { "display": "flex" }}>
-        <h3>{MYDATA[blank.key].ask}</h3>
+        style={action.count === (action.ARRAY_LENGTH-1) ? { "display": "none" } : { "display": "flex" }}>
+        <h3>{MYDATA[action.key].count}. {MYDATA[action.key].ask}</h3>
         <textarea
           cols={80}
           rows={15}
-          value={blank.inputValue}
+          value={action.inputValue}
           ref={ref} //set focus input
           onChange={(e) => {
             updateInputValueOnchange(e.target.value);
@@ -111,8 +86,7 @@ const App = () => {
         ></textarea>
         <button
           onClick={() => {
-            
-            setAnswer();
+            updateCount();
             ref.current.focus(); //set focus input
           }}>
           Next
