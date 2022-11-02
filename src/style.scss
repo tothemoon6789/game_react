@@ -1,5 +1,26 @@
 $primary-color: #4527a0;
 $secondary-color: #fb8c00;
+$padding-li : 0.5rem 1rem;
+$box-shadow: 0 8px 16px 0px rgba(0,0,0,0.2);
+
+.lef-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-shadow: $box-shadow;
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        li {
+            padding: $padding-li;
+            &:hover {
+                background-color: $primary-color;
+                color: white;
+            }
+        }
+    }
+}
 
 .ask {
     display: flex;
@@ -18,6 +39,7 @@ $secondary-color: #fb8c00;
             box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
             font-size: 22px;
+
             &:focus {
                 box-shadow: 0 8px 16px 0 rgba(69, 69, 160, 0.8);
                 outline: none;
