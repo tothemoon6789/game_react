@@ -1,3 +1,11 @@
-const myarray = [1,2,3,4,5,];
-const total = myarray.reduce((total,value) => total+value);
-console.log(total);
+const txt = "zis";
+// i la case-insensitive
+const regex = /[^is]/
+console.log("-----regex.test(txt)-----");
+console.log(regex.test(txt));
+console.log("-----regex.exec(txt)-----");
+console.log(regex.exec(txt));
+console.log("-----txt.match(regex)-----");
+console.log(txt.match(regex));
+console.log("-----txt.search(regex)-----");
+console.log(txt.search(regex));
