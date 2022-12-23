@@ -43,9 +43,10 @@ class Item extends Component {
             </>
     }
     render() {
-        const { developer, hightLight } = this.props
+        const { developer, hightLight,theKey } = this.props
         return (
-            <li className={hightLight ? 'bg-danger p-1 mt-1 rounded' : 'p-1 mt-1 rounded'}>
+            
+            <li key={theKey} className={hightLight ? 'bg-danger p-1 mt-1 rounded' : 'p-1 mt-1 rounded'}>
                 {developer["ask"]}
                 {this.hideAnswer()}
                 <div className="form-group"

@@ -1,16 +1,49 @@
 import React, { Component } from 'react';
-import data from './data.json'
 import Item from './item';
+import app from '../firebase';
+import { getDatabase, ref, onValue, set, push, get, child } from 'firebase/database';
+
 
 class Developer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            developer: data,
+            developer: {},
             belong: "javascript",
-            count: 0,
+            totalSentence: 0,
+       
 
         }
+        this.firebase();
+
+    }
+    // TODO: init firebase database 
+    firebase = () => {
+        const dbRef = ref(getDatabase(app));
+        get(child(dbRef, 'developer/')).then((snapshot) => {
+            if (snapshot.exists()) {
+                // console.log(snapshot.val());
+                this.setState({
+                    developer:snapshot.val()
+                })
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+    // TODO: render total sentence
+    totalSentence = (belongValue) => {
+        let totalSentence = 0;
+        
+       Object.keys( this.state.developer).map((key) => {
+            
+            if (this.state.developer[key]["belong"] === belongValue) {
+                totalSentence++
+            }
+        }) 
+        return totalSentence;
     }
     // TODO: Re Render bai hoc
     reRenderDeveloper = (belong) => {
@@ -23,9 +56,8 @@ class Developer extends Component {
     renderEntries = () => {
         const { developer } = this.state;
         const set = new Set([])
-        developer.map((value) => {
-            set.add(value.belong)
-
+        Object.keys(developer).map((key) => {
+            set.add(developer[key]["belong"])
         })
         return Array.from(set).map((value) => {
             return <li><button className='btn btn-default btn-sm' onClick={() => {
@@ -34,26 +66,32 @@ class Developer extends Component {
         })
 
     }
-    // return <li>{value.belong}</li>
+
     // TODO: Render các câu hỏi
     developerQuestion = () => {
         const { developer, belong } = this.state;
-        return developer.map((developer) => {
-            return developer.belong === belong ?
-                <Item developer={developer} /> : null
+        return developer ?
+         Object.keys(developer).map((key) => {
+            return developer[key].belong === belong ?
+                <Item theKey={key} developer={developer[key]} /> : null
 
-        })
+        }) 
+        : null
+    
     }
     // TODO: Phương thức render chính
     render() {
-        console.log("RENDER")
-        const {belong} = this.state;
+        
+    
+
+        const { belong } = this.state;
         return (
             <>
+               
                 <div className='container'>
                     <div className='row'>
                         <div className='col-md-8'>
-                            <h1>{belong} <small>17 câu</small></h1>
+                            <h1>{belong} <span className="badge badge-secondary">{this.totalSentence(belong)} câu</span></h1>
                             <ul style={{ "listStyle": "decimal" }}>
                                 {this.developerQuestion()}
                             </ul>
