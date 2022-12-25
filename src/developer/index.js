@@ -59,8 +59,8 @@ class Developer extends Component {
         Object.keys(developer).map((key) => {
             set.add(developer[key]["belong"])
         })
-        return Array.from(set).map((value) => {
-            return <li><button className='btn btn-default btn-sm' onClick={() => {
+        return Array.from(set).map((value,index) => {
+            return <li key={index}><button className='btn btn-default btn-sm' onClick={() => {
                 this.reRenderDeveloper(value)
             }}>{value}</button></li>
         })
@@ -71,9 +71,9 @@ class Developer extends Component {
     developerQuestion = () => {
         const { developer, belong } = this.state;
         return developer ?
-         Object.keys(developer).map((key) => {
+         Object.keys(developer).map((key,index) => {
             return developer[key].belong === belong ?
-                <Item theKey={key} developer={developer[key]} /> : null
+                <Item key={index} theKey={key} developer={developer[key]} /> : null
 
         }) 
         : null
