@@ -15,10 +15,24 @@ class Update extends Component {
     answer = createRef();
     belong = createRef();
     result = createRef();
-
+    // TODO: cập nhật dữ liệu trên firebase
+    updateFb = () => {
+        const { switchDisplay, updateUpdator, keyFirebase } = this.props;
+        switchDisplay()
+        this.setState({
+            updated: {
+                ask: this.ask.current.value,
+                answer: this.answer.current.value,
+                belong: this.belong.current.value,
+                result: this.result.current.value,
+            }
+        }, () => {
+            updateUpdator(this.state.updated, keyFirebase)
+        })
+    }
     render() {
-        const { updator, display, switchDisplay, updateUpdator, keyFirebase } = this.props;
-    
+        const { updator, display } = this.props;
+
         return (
             <div style={{ "display": `${display}` }}>
                 <div className='row' >
@@ -52,6 +66,7 @@ class Update extends Component {
                                 <option value="object">object</option>
                                 <option value="promise">promise</option>
                                 <option value="regex">regex</option>
+                                <option value="reactjs">reactjs</option>
                             </select>
                         </div>
                         <div className="input-group input-group-sm mb-3">
@@ -63,21 +78,7 @@ class Update extends Component {
                                 defaultValue={updator.result}
                                 type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" />
                         </div>
-                        <button onClick={() => {
-                            switchDisplay()
-
-                            this.setState({
-                                updated: {
-                                    ask: this.ask.current.value,
-                                    answer: this.answer.current.value,
-                                    belong: this.belong.current.value,
-                                    result: this.result.current.value,
-                                }
-                            }, () => {
-                                updateUpdator(this.state.updated,keyFirebase)
-                            })
-
-                        }} className='btn btn-block btn-info'>Update</button>
+                        <button onClick={() => this.updateFb()} className='btn btn-block btn-info'>Update</button>
                     </div>
                 </div>
 

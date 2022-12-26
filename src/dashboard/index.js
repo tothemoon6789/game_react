@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import Item from './item';
 import app from '../firebase';
-import { child, get, getDatabase, onValue, ref, set } from 'firebase/database';
+import { child, get, getDatabase, onValue, ref, remove, set } from 'firebase/database';
+import Update from './update';
+import Modal from '../modal/modal';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -13,9 +15,27 @@ class Dashboard extends Component {
         }
         this.callFirebase();
     }
-    updateUpdator = (updated,keyFirebase) => {
+    deleteDeveloper = (keyFirebase) => {
+
+        if (window.confirm("HELLO WOLRD") == true) {
+            const db = getDatabase();
+            remove(ref(db, "developer/" + keyFirebase))
+                .then(() => {
+                    this.callFirebase();
+                    this.props.handleAlert({
+                        alert: "alert-danger",
+                        mes: "Đã xóa",
+                        show: true,
+                    })
+                })
+
+        } else {
+
+        }
+    }
+    updateUpdator = (updated, keyFirebase) => {
         const db = getDatabase();
-        set(ref(db,"developer/"+keyFirebase),updated)
+        set(ref(db, "developer/" + keyFirebase), updated)
             .then(() => {
                 this.callFirebase()
             })
@@ -24,7 +44,12 @@ class Dashboard extends Component {
     loopDatabase = () => {
         const { developer, belong } = this.state;
         return Object.keys(developer).map((key, index) => {
-            return developer[key]["belong"] === belong ? <Item key={index} keyFirebase={key} developer={developer[key]} updateUpdator={this.updateUpdator}/> : null
+            return developer[key]["belong"] === belong ?
+                <Item
+                    key={index} keyFirebase={key}
+                    developer={developer[key]}
+                    updateUpdator={this.updateUpdator}
+                    deleteDeveloper={this.deleteDeveloper} /> : null
         })
     }
     // TODO: lay du lieu tu firebase conect vao contructor
@@ -46,6 +71,7 @@ class Dashboard extends Component {
         const { dashboard } = this.state;
         return (
             <>
+
                 <div className='container'>
                     <button className='btn btn-primary btn-sm' onClick={() => {
                         this.setState({ dashboard: true })
@@ -59,7 +85,6 @@ class Dashboard extends Component {
                         <div className='row'>
                             <div className='col-md-3'>
                                 <div className="form-group">
-
                                     <select className="form-control" onChange={(val) => {
                                         this.setState({ belong: val.target.value })
                                     }}>
@@ -67,8 +92,15 @@ class Dashboard extends Component {
                                         <option>object</option>
                                         <option>regex</option>
                                         <option>promise</option>
+                                        <option>reactjs</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div className='col-md-3'>
+                                <button 
+                                className='btn btn-info'
+                                data-toggle="modal" data-target="#modelId"
+                                >Thêm mới +</button>
                             </div>
                         </div>
                     </div>
