@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Developer from '../../developer';
-import Dashboard from '../../dashboard';
-import Alert from '../../alert';
-import Modal from '../../modal/modal';
+import Developer from './Developer';
+import Dashboard from '../dashboard/Dashboard';
+import Alert from '../../component/alert';
+import Modal from '../../component/modal/modal';
 
 class Home extends Component {
     constructor(props) {
@@ -17,7 +17,6 @@ class Home extends Component {
         return (
           <>
             <Modal handleAlert={this.handleAlert} />
-            <Dashboard handleAlert={this.handleAlert} />
             <Developer />
             <Alert action={this.state} closeAlert={this.closeAlert} />
           </>

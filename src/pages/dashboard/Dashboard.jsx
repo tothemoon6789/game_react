@@ -1,34 +1,25 @@
 import React, { Component } from 'react';
 import Item from './item';
-import app from '../firebase';
+import app from '../../firebase';
 import { child, get, getDatabase, onValue, ref, remove, set } from 'firebase/database';
+import Modal from '../../component/modal/modal';
 
 
 class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dashboard: false,
             developer: {},
             belong: "javascript",
         }
         this.callFirebase();
     }
-   
+
     render() {
         const { dashboard } = this.state;
         return (
             <>
-
                 <div className='container'>
-                    <button className='btn btn-primary btn-sm' onClick={() => {
-                        this.setState({ dashboard: true })
-                    }}>Open Dashboard</button>
-                    <button className='btn btn-danger btn-sm' onClick={() => {
-                        this.setState({ dashboard: false })
-                    }}>Close Dashboard</button>
-                </div>
-                <div className='container' style={dashboard ? { "display": "" } : { "display": "none" }}>
                     <div >
                         <div className='row'>
                             <div className='col-md-3'>
@@ -45,9 +36,9 @@ class Dashboard extends Component {
                                 </div>
                             </div>
                             <div className='col-md-3'>
-                                <button 
-                                className='btn btn-info'
-                                data-toggle="modal" data-target="#modelId"
+                                <button
+                                    className='btn btn-info'
+                                    data-toggle="modal" data-target="#modelId"
                                 >Thêm mới +</button>
                             </div>
                         </div>
@@ -57,6 +48,7 @@ class Dashboard extends Component {
                             {this.loopDatabase()}
                         </ul>
                     </div>
+                    <Modal/>
                 </div >
             </>
         );
@@ -74,7 +66,7 @@ class Dashboard extends Component {
                     // })
                 })
 
-        } 
+        }
     }
     updateUpdator = (updated, keyFirebase) => {
         const db = getDatabase();
