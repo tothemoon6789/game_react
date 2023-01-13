@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import Item from './item';
 import app from '../firebase';
 import { child, get, getDatabase, onValue, ref, remove, set } from 'firebase/database';
-import Update from './update';
-import Modal from '../modal/modal';
+
 
 class Dashboard extends Component {
     constructor(props) {
@@ -15,58 +14,7 @@ class Dashboard extends Component {
         }
         this.callFirebase();
     }
-    deleteDeveloper = (keyFirebase) => {
-
-        if (window.confirm("HELLO WOLRD") == true) {
-            const db = getDatabase();
-            remove(ref(db, "developer/" + keyFirebase))
-                .then(() => {
-                    this.callFirebase();
-                    this.props.handleAlert({
-                        alert: "alert-danger",
-                        mes: "Đã xóa",
-                        show: true,
-                    })
-                })
-
-        } else {
-
-        }
-    }
-    updateUpdator = (updated, keyFirebase) => {
-        const db = getDatabase();
-        set(ref(db, "developer/" + keyFirebase), updated)
-            .then(() => {
-                this.callFirebase()
-            })
-    }
-    // TODO: loop du lieu
-    loopDatabase = () => {
-        const { developer, belong } = this.state;
-        return Object.keys(developer).map((key, index) => {
-            return developer[key]["belong"] === belong ?
-                <Item
-                    key={index} keyFirebase={key}
-                    developer={developer[key]}
-                    updateUpdator={this.updateUpdator}
-                    deleteDeveloper={this.deleteDeveloper} /> : null
-        })
-    }
-    // TODO: lay du lieu tu firebase conect vao contructor
-    callFirebase = () => {
-        const databaseRef = ref(getDatabase(app));
-        get(child(databaseRef, "developer/"))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    this.setState({ developer: snapshot.val() })
-                } else {
-                    console.log("No data found");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
+   
     render() {
         const { dashboard } = this.state;
         return (
@@ -112,6 +60,55 @@ class Dashboard extends Component {
                 </div >
             </>
         );
+    }
+    deleteDeveloper = (keyFirebase) => {
+        if (window.confirm("HELLO WOLRD") == true) {
+            const db = getDatabase();
+            remove(ref(db, "developer/" + keyFirebase))
+                .then(() => {
+                    this.callFirebase();
+                    // this.props.handleAlert({
+                    //     alert: "alert-danger",
+                    //     mes: "Đã xóa",
+                    //     show: true,
+                    // })
+                })
+
+        } 
+    }
+    updateUpdator = (updated, keyFirebase) => {
+        const db = getDatabase();
+        set(ref(db, "developer/" + keyFirebase), updated)
+            .then(() => {
+                this.callFirebase()
+            })
+    }
+    // TODO: loop du lieu
+    loopDatabase = () => {
+        const { developer, belong } = this.state;
+        return Object.keys(developer).map((key, index) => {
+            return developer[key]["belong"] === belong ?
+                <Item
+                    key={index} keyFirebase={key}
+                    developer={developer[key]}
+                    updateUpdator={this.updateUpdator}
+                    deleteDeveloper={this.deleteDeveloper} /> : null
+        })
+    }
+    // TODO: lay du lieu tu firebase conect vao contructor
+    callFirebase = () => {
+        const databaseRef = ref(getDatabase(app));
+        get(child(databaseRef, "developer/"))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    this.setState({ developer: snapshot.val() })
+                } else {
+                    console.log("No data found");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 }
 
