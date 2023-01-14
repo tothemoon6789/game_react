@@ -5,50 +5,25 @@ import { getDatabase, ref, onValue, set, push, get, child } from 'firebase/datab
 
 
 class Developer extends Component {
+    // ! life cycle
     constructor(props) {
         super(props);
         this.state = {
-            developer: {},
+            dtFirebase: {},
             belong: "javascript",
             totalSentence: 0,
         }
-        this.firebase();
+
 
     }
-
-    // TODO: Phương thức render chính
-    render() {
-        const { belong } = this.state;
-        return (
-            <>
-                <div className='container'>
-                    <div className='row'>
-                        <div className='col-md-8'>
-                            <h1>{belong} <span className="badge badge-secondary">{this.totalSentence(belong)} câu</span></h1>
-                            <ul style={{ "listStyle": "decimal" }}>
-                                {this.developerQuestion()}
-                            </ul>
-                        </div>
-                        <div className='col-md-4 sticky-top'>
-                            <ul>
-                                {this.renderEntries()}
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-
-            </>
-        );
-    }
-    // TODO: init firebase database 
-    firebase = () => {
+    componentDidMount() {
+        console.log("componentDidMount");
         const dbRef = ref(getDatabase(app));
-        get(child(dbRef, 'developer/')).then((snapshot) => {
+        get(child(dbRef, '/')).then((snapshot) => {
             if (snapshot.exists()) {
-                // console.log(snapshot.val());
+                console.log(snapshot.val());
                 this.setState({
-                    developer: snapshot.val()
+                    dtFirebase: snapshot.val()
                 })
             } else {
                 console.log("No data available");
@@ -57,17 +32,52 @@ class Developer extends Component {
             console.error(error);
         });
     }
+    // TODO: Phương thức render chính
+    render() {
+        const { belong } = this.state;
+        return (
+            <>
+                <div className='container'>
+
+                    <div className='row'>
+                        <div className='col-md-4'>
+                            <ol className='' style={{ listStyleType: "upper-roman" }}>
+                                {this.renderEntries()}
+                            </ol>
+                        </div>
+                        <div className='col-md-8'>
+                            <h1>{belong} <span className="badge badge-secondary">{this.totalSentence(belong)} câu</span></h1>
+                            <ul style={{ "listStyle": "decimal" }}>
+                                {this.developerQuestion()}
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </>
+        );
+    }
+
+    // ! method
     // TODO: render total sentence
     totalSentence = (belongValue) => {
+        const { dtFirebase } = this.state
         let totalSentence = 0;
+        if (Object.keys(dtFirebase).length !== 0) {
+            console.log("DA VAO DAY");
+            console.log(typeof dtFirebase);
+            Object.keys(dtFirebase.developer).map((key) => {
 
-        Object.keys(this.state.developer).map((key) => {
+                if (dtFirebase.developer[key]["belong"] === belongValue) {
+                    totalSentence++
+                }
+            })
+            return totalSentence;
+        }
+        return null
 
-            if (this.state.developer[key]["belong"] === belongValue) {
-                totalSentence++
-            }
-        })
-        return totalSentence;
     }
     // TODO: Re Render bai hoc
     reRenderDeveloper = (belong) => {
@@ -78,26 +88,33 @@ class Developer extends Component {
     }
     // TODO: Rende danh muc
     renderEntries = () => {
-        const { developer } = this.state;
-        const set = new Set([])
-        Object.keys(developer).map((key) => {
-            set.add(developer[key]["belong"])
-        })
-        return Array.from(set).map((value, index) => {
-            return <li key={index}><button className='btn btn-default btn-sm' onClick={() => {
-                this.reRenderDeveloper(value)
-            }}>{value}</button></li>
-        })
+        const { dtFirebase } = this.state
+        if (Object.keys(dtFirebase).length !== 0) {
+            return dtFirebase.lesson.map((value, index) => {
+                return <li
+                    onClick={() => {
+                        this.reRenderDeveloper(value)
+                    }}
+                    className='border p-1 px-3'
+                    key={index}
+                    style={
+                        { cursor: "pointer" }
+                    }>
+                    {value}
+                </li>
+            })
+        }
+
 
     }
 
     // TODO: Render các câu hỏi
     developerQuestion = () => {
-        const { developer, belong } = this.state;
-        return developer ?
-            Object.keys(developer).map((key, index) => {
-                return developer[key].belong === belong ?
-                    <Item key={index} theKey={key} developer={developer[key]} /> : null
+        const { dtFirebase, belong } = this.state;
+        return Object.keys(dtFirebase).length !== 0 ?
+            Object.keys(dtFirebase.developer).map((key, index) => {
+                return dtFirebase.developer[key].belong === belong ?
+                    <Item key={index} theKey={key} developer={dtFirebase.developer[key]} /> : null
 
             })
             : null

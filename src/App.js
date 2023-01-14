@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import "./style.scss"
+// import "./style.scss"
 import Dashboard from './pages/dashboard/Dashboard';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CustomerTemplate from './templates/CustomerTemplate';

@@ -6,17 +6,33 @@ import Modal from '../../component/modal/modal';
 
 
 class Dashboard extends Component {
+    // ! lif-cycle
     constructor(props) {
         super(props);
         this.state = {
-            developer: {},
+            dtFirebase: {},
             belong: "javascript",
         }
-        this.callFirebase();
+   
     }
-
+    componentDidMount() {
+        const databaseRef = ref(getDatabase(app));
+        get(child(databaseRef, "/"))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    this.setState({
+                        ...this.state,
+                        dtFirebase: snapshot.val()
+                    })
+                } else {
+                    console.log("No data found");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
     render() {
-        const { dashboard } = this.state;
         return (
             <>
                 <div className='container'>
@@ -24,22 +40,16 @@ class Dashboard extends Component {
                         <div className='row'>
                             <div className='col-md-3'>
                                 <div className="form-group">
-                                    <select className="form-control" onChange={(val) => {
-                                        this.setState({ belong: val.target.value })
-                                    }}>
-                                        <option>javascript</option>
-                                        <option>object</option>
-                                        <option>regex</option>
-                                        <option>promise</option>
-                                        <option>reactjs</option>
-                                    </select>
+                                    {this.renderSelect()}
                                 </div>
                             </div>
                             <div className='col-md-3'>
                                 <button
                                     className='btn btn-info'
-                                    data-toggle="modal" data-target="#modelId"
-                                >Thêm mới +</button>
+                                    data-toggle="modal"
+                                    data-target="#modelId"
+                                >Thêm mới +
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -48,10 +58,29 @@ class Dashboard extends Component {
                             {this.loopDatabase()}
                         </ul>
                     </div>
-                    <Modal/>
+                    <Modal />
                 </div >
             </>
         );
+    }
+    //! method
+    renderSelect = () => {
+        const { dtFirebase } = this.state
+        if (Object.keys(dtFirebase).length !== 0) {
+            return (
+                <select
+                    className="form-control"
+                    onChange={(val) => {
+                        this.setState({ belong: val.target.value })
+                    }}>
+                    {dtFirebase.lesson.map((item, index) => {
+                        return <option key={index}>{item}</option>
+                    })}
+                </select>
+            )
+        }
+        return null
+
     }
     deleteDeveloper = (keyFirebase) => {
         if (window.confirm("HELLO WOLRD") == true) {
@@ -77,31 +106,20 @@ class Dashboard extends Component {
     }
     // TODO: loop du lieu
     loopDatabase = () => {
-        const { developer, belong } = this.state;
-        return Object.keys(developer).map((key, index) => {
-            return developer[key]["belong"] === belong ?
-                <Item
-                    key={index} keyFirebase={key}
-                    developer={developer[key]}
-                    updateUpdator={this.updateUpdator}
-                    deleteDeveloper={this.deleteDeveloper} /> : null
-        })
-    }
-    // TODO: lay du lieu tu firebase conect vao contructor
-    callFirebase = () => {
-        const databaseRef = ref(getDatabase(app));
-        get(child(databaseRef, "developer/"))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    this.setState({ developer: snapshot.val() })
-                } else {
-                    console.log("No data found");
-                }
+        const { dtFirebase, belong } = this.state;
+        if (Object.keys(dtFirebase).length !== 0) {
+            return Object.keys(dtFirebase.developer).map((key, index) => {
+                return dtFirebase.developer[key]["belong"] === belong ?
+                    <Item
+                        key={index} keyFirebase={key}
+                        developer={dtFirebase.developer[key]}
+                        updateUpdator={this.updateUpdator}
+                        deleteDeveloper={this.deleteDeveloper} /> : null
             })
-            .catch((error) => {
-                console.log(error);
-            })
+        }
+        return null
     }
+
 }
 
 export default Dashboard;

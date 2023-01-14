@@ -1,5 +1,6 @@
-import { getDatabase, push, set, ref } from 'firebase/database';
+import { getDatabase, push, set, ref,get,child } from 'firebase/database';
 import React, { Component } from 'react';
+import app from '../../firebase';
 
 class Modal extends Component {
     constructor(props) {
@@ -13,7 +14,25 @@ class Modal extends Component {
             answer: "",
             belong: "javascript",
             result: "",
+            dtFirebase:{}
         }
+    }
+    componentDidMount() {
+        console.log("componentDidMount");
+        const dbRef = ref(getDatabase(app));
+        get(child(dbRef, '/')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                this.setState({
+                    ...this.state,
+                    dtFirebase: snapshot.val()
+                })
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
     }
     render() {
         return (
@@ -39,7 +58,7 @@ class Modal extends Component {
                                             }}
                                             ref={this.refAsk}
                                             type="text"
-                                            className="form-control" aria-describedby="helpId" placeholder="Enter the question ?" />
+                                            className="form-control" aria-describedby="helpId" placeholder="Nhập câu hỏi ?" />
                                     </div>
                                     <div className="form-group">
                                         <input
@@ -48,24 +67,11 @@ class Modal extends Component {
                                                     return { ...pre, answer: e.target.value }
                                                 })
                                             }}
-                                            ref={this.refAnswer} type="text" className="form-control" aria-describedby="helpId" placeholder="Enter the question ?" />
+                                            ref={this.refAnswer} type="text" className="form-control" aria-describedby="helpId" placeholder="Nhập câu trả lời ?" />
                                     </div>
                                     <div className="form-group">
-                                        <select
-                                            onChange={(e) => {
-                                                this.setState((pre) => {
-                                                    return { ...pre, belong: e.target.value }
-                                                })
-                                            }}
-                                            defaultValue="javascript"
-                                            ref={this.refBelong} className="form-control" >
-                                            <option>object</option>
-                                            <option>regex</option>
-                                            <option>promise</option>
-                                            <option>javascript</option>|
-                                            <option>reactjs</option>
-
-                                        </select>
+                                       
+                                        {this.renderSelect()}
                                     </div>
 
                                     <div className="form-group">
@@ -75,7 +81,7 @@ class Modal extends Component {
                                                     return { ...pre, result: e.target.value }
                                                 })
                                             }}
-                                            ref={this.refResult} type="text" className="form-control" aria-describedby="helpId" placeholder="Enter the question ?" />
+                                            ref={this.refResult} type="text" className="form-control" aria-describedby="helpId" placeholder="Nhập result ?" disabled={true}/>
                                     </div>
                                 </div>
                                 <div className="modal-footer">
@@ -113,6 +119,25 @@ class Modal extends Component {
 
             </>
         );
+    }
+    // !method
+    renderSelect = () => {
+        const { dtFirebase } = this.state
+        if (Object.keys(dtFirebase).length !== 0) {
+            return (
+                <select
+                    className="form-control"
+                    onChange={(val) => {
+                        this.setState({ belong: val.target.value })
+                    }}>
+                    {dtFirebase.lesson.map((item, index) => {
+                        return <option key={index}>{item}</option>
+                    })}
+                </select>
+            )
+        }
+        return null
+
     }
 }
 
